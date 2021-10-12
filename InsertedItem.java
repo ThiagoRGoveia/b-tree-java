@@ -10,6 +10,10 @@ public class InsertedItem {
         this.rightChild = rightChild;
     }
 
+    public InsertedItem(TreeNodeData insertedItem) {
+        this.insertedItem = insertedItem;
+    }
+
     public TreeNodeData getInsertedItem() {
         return insertedItem;
     }

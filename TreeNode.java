@@ -13,34 +13,47 @@ class TreeNode {
     // Returns the entry that is equal or the closest to the key being searched
     public int keySearch(int key) {
         int closest = -1;
-        for(int i = 0; i <= maxItems; i++) {
-            if(itemArray[i].getKey() == key) {
-                return i;
-            } else {
-                if (itemArray[i].getKey() > key) {
-                    closest = i;
-                    break;
+        if (isEmpty()) {
+            return closest;
+        }
+        for(int i = 0; i < numItems + 1; i++) {
+            if (itemArray[i] != null) {
+                if(itemArray[i].getKey() == key) {
+                    return i;
+                } else {
+                    if (itemArray[i].getKey() > key) {
+                        closest = i;
+                        break;
+                    }
                 }
             }
         }
         if (closest == -1) {
-            closest = maxItems - 1;
+            closest = numItems - 1;
         }
         return closest;
     }
 
     public void insertEntryToNode(InsertedItem newItem) {
-        for (int i=0; i < maxItems; i++) {
-            if(itemArray[i].getKey() > newItem.getInsertedItem().getKey()) {
-                for(int j=numItems-1; j==i; j--) {
+        for (int i = 0; i < numItems + 1; i++) {
+            if (itemArray[i] == null) {
+                itemArray[i] = newItem.getInsertedItem();
+                increaseItemNum();
+                insertOrderedChild(i, newItem.getLeftChild());
+                insertOrderedChild(i + 1, newItem.getRightChild());
+                break;
+            } else if(itemArray[i].getKey() > newItem.getInsertedItem().getKey()) {
+                for(int j = numItems - 1; j==i; j--) {
                     itemArray[j+1] = itemArray[j];
                 }
                 itemArray[i] = newItem.getInsertedItem();
                 insertOrderedChild(i, newItem.getLeftChild());
                 insertOrderedChild(i + 1, newItem.getRightChild());
+                increaseItemNum();
                 break;
             }
         }
+        printItems();
     }
 
     public int getNumItems() {
@@ -94,7 +107,7 @@ class TreeNode {
 
     public TreeNodeData[] getNodeSplitReadyArray() {
         TreeNodeData[] nodeSplitReadyArray = new TreeNodeData[maxItems + 1];
-        for (int i = 0; i < maxItems; i++) {
+        for (int i = 0; i < numItems + 1; i++) {
             nodeSplitReadyArray[i] = itemArray[i];
         }
         return nodeSplitReadyArray;
@@ -105,10 +118,10 @@ class TreeNode {
     }
 
     public void removeItem(int index) {
-        for (int i = index; i < maxItems; i++) {
+        for (int i = index; i < numItems + 1; i++) {
             itemArray[i] = itemArray[i + 1];
         }
-        itemArray[maxItems] = null;
+        itemArray[numItems + 1] = null;
         decreaseItemNum();
     }
 
@@ -126,5 +139,18 @@ class TreeNode {
         }
         childArray[index] = child;
     }
+
+    public boolean isEmpty() {
+        return itemArray[0] == null;
+    }
+
+    //print items
+    public void printItems() {
+        for (int i = 0; i < numItems; i++) {
+            System.out.print(itemArray[i].getKey());
+            System.out.print(',');
+        }
+    }
+
 }
 

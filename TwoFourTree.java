@@ -6,7 +6,7 @@ public class TwoFourTree {
     // Constructor
     public TwoFourTree()
     {
-        rootNode = null;
+        rootNode = new TreeNode();
     }
 
     public TreeNodeData search(int key) {
@@ -24,6 +24,10 @@ public class TwoFourTree {
 
     public SearchResult keySearch(int key, TreeNode node){
         int prospectKeyIndex = node.keySearch(key);
+        System.out.println("prospectKeyIndex: " + prospectKeyIndex);
+        if (prospectKeyIndex < 0) {
+            return new SearchResult(rootNode);
+        }
         TreeNodeData prospectItem = node.getItem(prospectKeyIndex);
         if(prospectItem.getKey() == key) {
             return new SearchResult(node, prospectItem);
@@ -51,11 +55,16 @@ public class TwoFourTree {
     public void insert(InsertedItem data, TreeNode node) {
         if (!node.isFull()) {
             node.insertEntryToNode(data);
+            System.out.println("Item inserted");
         } else if (node.isLeaf()) {
             handleLeafNodeOverflow(data, node);
         } else {
             handleRootNodeOverflow(data);
         }
+    }
+
+    public void insert(TreeNodeData newItem) {
+        insert(new InsertedItem(newItem));
     }
 
     public void handleLeafNodeOverflow(InsertedItem data, TreeNode node) {
