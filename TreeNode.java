@@ -12,26 +12,44 @@ class TreeNode {
 
     // Returns the entry that is equal or the closest to the key being searched
     public int keySearch(int key) {
-        int closest = -1;
+        // int closest = -1;
+        // if (isEmpty()) {
+        //     return closest;
+        // }
+        // for(int i = 0; i < numItems + 1; i++) {
+        //     if (itemArray[i] != null) {
+        //         if(itemArray[i].getKey() == key) {
+        //             return i;
+        //         } else {
+        //             if (itemArray[i].getKey() > key) {
+        //                 closest = i;
+        //                 break;
+        //             }
+        //         }
+        //     }
+        // }
+        // if (closest == -1) {
+        //     closest = numItems + 1;
+        // }
+        // return closest;
         if (isEmpty()) {
-            return closest;
+            return -1;
         }
-        for(int i = 0; i < numItems + 1; i++) {
-            if (itemArray[i] != null) {
-                if(itemArray[i].getKey() == key) {
-                    return i;
-                } else {
-                    if (itemArray[i].getKey() > key) {
-                        closest = i;
-                        break;
-                    }
-                }
-            }
+        int start = 0;
+        int end = numItems -1;
+        int middle = (start + end) / 2;
+        System.out.println(numItems);
+
+        while( start <= end ){
+            middle = (start + end) / 2;
+            if(itemArray[middle].getKey() == key)
+                return middle;
+            else if(key < itemArray[middle].getKey())
+                end = middle - 1;
+            else
+                start = middle + 1;
         }
-        if (closest == -1) {
-            closest = numItems - 1;
-        }
-        return closest;
+        return middle;
     }
 
     public void insertEntryToNode(InsertedItem newItem) {
@@ -134,7 +152,7 @@ class TreeNode {
     }
 
     public void insertOrderedChild(int index, TreeNode child) {
-        for (int i = numItems; i >= index; i--) {
+        for (int i = numItems - 1; i >= index; i--) {
             childArray[i + 1] = childArray[i];
         }
         childArray[index] = child;
@@ -144,12 +162,12 @@ class TreeNode {
         return itemArray[0] == null;
     }
 
-    //print items
     public void printItems() {
         for (int i = 0; i < numItems; i++) {
             System.out.print(itemArray[i].getKey());
             System.out.print(',');
         }
+        System.out.println();
     }
 
 }

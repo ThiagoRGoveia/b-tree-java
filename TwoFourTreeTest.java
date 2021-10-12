@@ -2,7 +2,6 @@
 
 
 public class TwoFourTreeTest {
-    int n = 30;
 
     public static void main(String args[])
     {
@@ -10,7 +9,7 @@ public class TwoFourTreeTest {
 
         // System.out.println("Sorting of randomly generated numbers using a 2-4 Tree");
         int nums[] = {5,1,9,3,8,11,36,94,0};
-        for (int i = 0; i < 9; i++) {
+        for (int i = 0; i < 8; i++) {
             tft.insert(
                 new TreeNodeData(nums[i])
             );
