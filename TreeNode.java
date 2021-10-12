@@ -1,4 +1,4 @@
-package arvore_twofour;
+// package arvore_twofour;
 
 class TreeNode {
     private int numItems;
@@ -29,13 +29,15 @@ class TreeNode {
         return closest;
     }
 
-    public void insertEntryToNode(TreeNodeData newEntry) {
+    public void insertEntryToNode(InsertedItem newItem) {
         for (int i=0; i < maxItems; i++) {
-            if(itemArray[i].getKey() > newEntry.getKey()) {
+            if(itemArray[i].getKey() > newItem.getInsertedItem().getKey()) {
                 for(int j=numItems-1; j==i; j--) {
                     itemArray[j+1] = itemArray[j];
                 }
-                itemArray[i] = newEntry;
+                itemArray[i] = newItem.getInsertedItem();
+                insertOrderedChild(i, newItem.getLeftChild());
+                insertOrderedChild(i + 1, newItem.getRightChild());
                 break;
             }
         }
@@ -71,6 +73,7 @@ class TreeNode {
 
     public void setItem(int index, TreeNodeData item) {
         itemArray[index] = item;
+        increaseItemNum();
     }
 
     public boolean isItemNull(int index) {
@@ -97,5 +100,31 @@ class TreeNode {
         return nodeSplitReadyArray;
     }
 
+    public void setParent(TreeNode parent) {
+        this.parent = parent;
+    }
+
+    public void removeItem(int index) {
+        for (int i = index; i < maxItems; i++) {
+            itemArray[i] = itemArray[i + 1];
+        }
+        itemArray[maxItems] = null;
+        decreaseItemNum();
+    }
+
+    public TreeNode getLeftChildFromItem(int index) {
+        return childArray[index];
+    }
+
+    public TreeNode getRightChildFromItem(int index) {
+        return childArray[index + 1];
+    }
+
+    public void insertOrderedChild(int index, TreeNode child) {
+        for (int i = numItems; i >= index; i--) {
+            childArray[i + 1] = childArray[i];
+        }
+        childArray[index] = child;
+    }
 }
 

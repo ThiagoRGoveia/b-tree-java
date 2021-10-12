@@ -1,14 +1,12 @@
-package arvore_twofour;
-
-import com.sun.source.tree.Tree;
+// package arvore_twofour;
 
 public class TwoFourTree {
-    private TreeNode root;
- 
-    // Constructor 
-    public TwoFourTree() 
+    private TreeNode rootNode;
+
+    // Constructor
+    public TwoFourTree()
     {
-        root = null;
+        rootNode = null;
     }
 
     public TreeNodeData search(int key) {
@@ -19,9 +17,9 @@ public class TwoFourTree {
             return  null;
         }
     }
- 
+
     public SearchResult keySearch(int key) {
-        return keySearch(key, root);
+        return keySearch(key, rootNode);
     }
 
     public SearchResult keySearch(int key, TreeNode node){
@@ -40,9 +38,9 @@ public class TwoFourTree {
 
 
     // Methods to insert data
-    public void insert(TreeNodeData data)
+    public void insert(InsertedItem data)
     {
-        SearchResult searchResult = keySearch(data.getKey());
+        SearchResult searchResult = keySearch(data.getInsertedItem().getKey());
         if (searchResult.hasData()) {
             System.out.println("Key already exists");
         } else {
@@ -50,7 +48,7 @@ public class TwoFourTree {
         }
     }
 
-    public void insert(TreeNodeData data, TreeNode node) {
+    public void insert(InsertedItem data, TreeNode node) {
         if (!node.isFull()) {
             node.insertEntryToNode(data);
         } else if (node.isLeaf()) {
@@ -59,42 +57,59 @@ public class TwoFourTree {
             handleRootNodeOverflow(data);
         }
     }
-    
-    public void handleLeafNodeOverflow(TreeNodeData data, TreeNode node) {
 
+    public void handleLeafNodeOverflow(InsertedItem data, TreeNode node) {
+        TreeNode newNode = split(node, data);
+        TreeNodeData promotedItem = promoteItem(newNode);
+        insert(
+            new InsertedItem(promotedItem, node, newNode),
+            node.getParent()
+        );
     }
-    
-    public void handleRootNodeOverflow(TreeNodeData data) {
-        
+
+    public void handleRootNodeOverflow(InsertedItem data) {
+        TreeNode newRootNode = new TreeNode();
+        TreeNode node = rootNode;
+        rootNode.setParent(newRootNode);
+        TreeNode newNode = split(node, data);
+        TreeNodeData promotedItem = promoteItem(newNode);
+        insert(
+            new InsertedItem(promotedItem, node, newNode),
+            newRootNode
+        );
     }
 
-
-
-    private void split(TreeNode node) {
+    private TreeNode split(TreeNode node, InsertedItem data) {
         TreeNode newNode = new TreeNode();
-
+        newNode.setParent(newNode.getParent());
+        rearrangeNodeItems(node, newNode, data.getInsertedItem());
+        return newNode;
     }
 
-    private void rearrangeNodeItems(TreeNode node, TreeNodeData newEntry) {
+    private TreeNodeData promoteItem(TreeNode node) {
+        TreeNodeData promotedItem = node.getItem(0);
+        node.removeItem(0);
+        return promotedItem;
+    }
+
+    private void rearrangeNodeItems(TreeNode node, TreeNode newNode, TreeNodeData data) {
         TreeNodeData[] splitArray =  node.getNodeSplitReadyArray();
         for( int i = 0; i < TreeNode.maxItems; i++) {
-            if (splitArray[i].getKey() > newEntry.getKey()) {
+            if (splitArray[i].getKey() > data.getKey()) {
                 for (int j = TreeNode.maxItems - 1; j == i; j--) {
                     splitArray[j + 1] = splitArray[j];
                 }
-                splitArray[i] = newEntry;
+                splitArray[i] = data;
                 break;
             }
         }
-
         for (int i = 0; i  < splitArray.length / 2; i++) {
-            node.a
+            node.setItem(i, splitArray[i]);
+        }
+        for (int i = splitArray.length / 2; i < splitArray.length; i++) {
+            newNode.setItem(i - splitArray.length / 2, splitArray[i]);
         }
     }
-
-    private void insertKeyToSortedArray(TreeNodeData node, int key){
-        }
-
 }
 /*
     // Method to insert data recursively
@@ -129,7 +144,7 @@ public class TwoFourTree {
 //        return root;
     }
 
- 
+
     // Methods to search for an element
 //    public boolean search(int val) {
 //        return search(root, val);
@@ -139,7 +154,7 @@ public class TwoFourTree {
 //    private boolean search(TreeNode r, int val) {
 //        return true;
 //    }
- 
+
     // Method for inorder traversal
 //    public void inorder()
 //    {
