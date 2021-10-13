@@ -1,6 +1,6 @@
 // package arvore_twofour;
 
-
+// Tester class
 public class TwoFourTreeTest {
     int n = 30;
 

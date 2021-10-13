@@ -9,6 +9,7 @@ public class TwoFourTree {
         rootNode = new TreeNode();
     }
 
+    //  Method to traverse the two-four tree
     public TreeNodeData search(int key) {
         SearchResult searchResult = keySearch(key);
         if (searchResult.hasData()) {
@@ -18,10 +19,12 @@ public class TwoFourTree {
         }
     }
 
+    //  Recursive method to search keys inside a node
     public SearchResult keySearch(int key) {
         return keySearch(key, rootNode);
     }
 
+    // Method that returns the search result in a node
     public SearchResult keySearch(int key, TreeNode node){
         int prospectKeyIndex = node.keySearch(key);
         System.out.println("prospectKeyIndex: " + prospectKeyIndex);
@@ -41,7 +44,7 @@ public class TwoFourTree {
     }
 
 
-    // Methods to insert data
+    //  Recursive method to insert data
     public void insert(InsertedItem data)
     {
         SearchResult searchResult = keySearch(data.getInsertedItem().getKey());
@@ -52,6 +55,8 @@ public class TwoFourTree {
         }
     }
 
+    //  Method for insertion which checks cases and
+    //  calls handling methods when the node overflows
     public void insert(InsertedItem data, TreeNode node) {
         if (!node.isFull()) {
             node.insertEntryToNode(data);
@@ -63,10 +68,14 @@ public class TwoFourTree {
         }
     }
 
+    //
     public void insert(TreeNodeData newItem) {
         insert(new InsertedItem(newItem));
     }
 
+    //  Method that handles the leaf node overflow
+    //  by calling split method and backtracks needed
+    //  insertions
     public void handleLeafNodeOverflow(InsertedItem data, TreeNode node) {
         TreeNode newNode = split(node, data);
         TreeNodeData promotedItem = promoteItem(newNode);
@@ -76,6 +85,9 @@ public class TwoFourTree {
         );
     }
 
+    //  Method that handles the tree root node
+    //  overflow by splitting, setting new parent
+    //  and promoting said item to parent node
     public void handleRootNodeOverflow(InsertedItem data) {
         TreeNode newRootNode = new TreeNode();
         TreeNode node = rootNode;
@@ -88,6 +100,8 @@ public class TwoFourTree {
         );
     }
 
+    //  Method splits, sets new node as parent if needed
+    //  and rearranges the child nodes
     private TreeNode split(TreeNode node, InsertedItem data) {
         TreeNode newNode = new TreeNode();
         newNode.setParent(newNode.getParent());
@@ -95,12 +109,18 @@ public class TwoFourTree {
         return newNode;
     }
 
+    //  Method that promotes the middle key into the parent
+    //  node and removes it from the previous child node from
+    //  which it came
     private TreeNodeData promoteItem(TreeNode node) {
         TreeNodeData promotedItem = node.getItem(0);
         node.removeItem(0);
         return promotedItem;
     }
 
+    //  Method for rearranging items through splitting
+    //  the node in two, creating a new node for the
+    //  rightmost key
     private void rearrangeNodeItems(TreeNode node, TreeNode newNode, TreeNodeData data) {
         TreeNodeData[] splitArray =  node.getNodeSplitReadyArray();
         for( int i = 0; i < TreeNode.maxItems; i++) {
@@ -120,63 +140,3 @@ public class TwoFourTree {
         }
     }
 }
-/*
-    // Method to insert data recursively
-//    private TreeNode insert(TreeNode node, int data)
-//    {
-//        return node;
-//    }
-
-    // Method to check if tree is empty
-    public boolean isEmpty()
-    {
-        return root == null;
-    }
-
-
-    // Methods to delete data
-    public void delete(int k)
-    {
-//        if (isEmpty())
-//            System.out.println("Tree Empty");
-//        else if (search(k) == false)
-//            System.out.println("Sorry " + k + " is not present");
-//        else
-//        {
-//            root = delete(root, k);
-//            System.out.println(k + " deleted from the tree");
-//        }
-    }
-
-    private TreeNode delete(TreeNode root, int key)
-    {
-//        return root;
-    }
-
-
-    // Methods to search for an element
-//    public boolean search(int val) {
-//        return search(root, val);
-//    }
-//
-//    // Method to search for an element recursively
-//    private boolean search(TreeNode r, int val) {
-//        return true;
-//    }
-
-    // Method for inorder traversal
-//    public void inorder()
-//    {
-//        inorder(root);
-//    }
-//
-//    private void inorder(TreeNode r)
-//    {
-//        if (r != null)
-//        {
-//            inorder(r.getLeft());
-//            System.out.print(r.getData() + " ");
-//            inorder(r.getRight());
-//        }
-//    }
-*/
