@@ -4,6 +4,7 @@ public class SearchResult {
     private TreeNode finalNode;
     private TreeNodeData treeNodeData;
 
+    // Method for returning
     public SearchResult(TreeNode finalNode, TreeNodeData searchResult) {
         this.finalNode = finalNode;
         this.treeNodeData = searchResult;
