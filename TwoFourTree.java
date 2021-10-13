@@ -24,26 +24,36 @@ public class TwoFourTree {
 
     public SearchResult keySearch(int key, TreeNode node){
         int prospectKeyIndex = node.keySearch(key);
-        System.out.println("prospectKeyIndex: " + prospectKeyIndex);
+        // System.out.println("prospectKeyIndex " + prospectKeyIndex);
         if (prospectKeyIndex < 0) {
             return new SearchResult(rootNode);
         }
+        // node.printItems();
+        // System.out.println("key found " + node.getItem(prospectKeyIndex).getKey());
         TreeNodeData prospectItem = node.getItem(prospectKeyIndex);
         if(prospectItem.getKey() == key) {
             return new SearchResult(node, prospectItem);
         } else {
-            TreeNode currentNode = node.getChild(prospectKeyIndex);
+            TreeNode currentNode;
+            if (prospectItem.getKey() > key) {
+                currentNode = node.getChild(prospectKeyIndex);
+            } else {
+                currentNode = node.getChild(prospectKeyIndex + 1);
+            }
             if (currentNode != null) {
                 return keySearch(key, currentNode);
             }
+            // node.printItems();
             return new SearchResult(node);
         }
+
     }
 
 
     // Methods to insert data
     public void insert(InsertedItem data)
     {
+        System.out.println("inserting " + data.getInsertedItem().getKey());
         SearchResult searchResult = keySearch(data.getInsertedItem().getKey());
         if (searchResult.hasData()) {
             System.out.println("Key already exists");
@@ -56,10 +66,11 @@ public class TwoFourTree {
         if (!node.isFull()) {
             node.insertEntryToNode(data);
             System.out.println("Item inserted");
-        } else if (node.isLeaf()) {
-            handleLeafNodeOverflow(data, node);
-        } else {
+            node.printItems();
+        } else if (node.isRoot()) {
             handleRootNodeOverflow(data);
+        } else {
+            handleLeafNodeOverflow(data, node);
         }
     }
 
@@ -69,7 +80,9 @@ public class TwoFourTree {
 
     public void handleLeafNodeOverflow(InsertedItem data, TreeNode node) {
         TreeNode newNode = split(node, data);
+        newNode.setParent(node.getParent());
         TreeNodeData promotedItem = promoteItem(newNode);
+        System.out.println("Promoted item " + promotedItem.getKey());
         insert(
             new InsertedItem(promotedItem, node, newNode),
             node.getParent()
@@ -79,9 +92,15 @@ public class TwoFourTree {
     public void handleRootNodeOverflow(InsertedItem data) {
         TreeNode newRootNode = new TreeNode();
         TreeNode node = rootNode;
-        rootNode.setParent(newRootNode);
+        rootNode = newRootNode;
+        node.setParent(newRootNode);
         TreeNode newNode = split(node, data);
+        // System.out.println("Print node");
+        // node.printItems();
+        // System.out.println("Print newnode");
+        // newNode.printItems();
         TreeNodeData promotedItem = promoteItem(newNode);
+        System.out.println("Promoted item " + promotedItem.getKey());
         insert(
             new InsertedItem(promotedItem, node, newNode),
             newRootNode
@@ -90,7 +109,7 @@ public class TwoFourTree {
 
     private TreeNode split(TreeNode node, InsertedItem data) {
         TreeNode newNode = new TreeNode();
-        newNode.setParent(newNode.getParent());
+        newNode.setParent(node.getParent());
         rearrangeNodeItems(node, newNode, data.getInsertedItem());
         return newNode;
     }
@@ -103,15 +122,16 @@ public class TwoFourTree {
 
     private void rearrangeNodeItems(TreeNode node, TreeNode newNode, TreeNodeData data) {
         TreeNodeData[] splitArray =  node.getNodeSplitReadyArray();
-        for( int i = 0; i < TreeNode.maxItems; i++) {
-            if (splitArray[i].getKey() > data.getKey()) {
-                for (int j = TreeNode.maxItems - 1; j == i; j--) {
-                    splitArray[j + 1] = splitArray[j];
-                }
-                splitArray[i] = data;
-                break;
-            }
+        insertSortedItemToArray(splitArray, data);
+        System.out.println("Split array");
+        System.out.println("-----------");
+        for (int i = 0; i < splitArray.length; i++) {
+            System.out.print(splitArray[i].getKey());
+            System.out.print(",");
         }
+        System.out.println();
+        System.out.println("-----------");
+
         for (int i = 0; i  < splitArray.length / 2; i++) {
             node.setItem(i, splitArray[i]);
         }
@@ -119,51 +139,47 @@ public class TwoFourTree {
             newNode.setItem(i - splitArray.length / 2, splitArray[i]);
         }
     }
+
+    private void insertSortedItemToArray (TreeNodeData[] array, TreeNodeData item) {
+        // printTreeNodeDataArray(array);
+        int i = 0;
+        while (i < array.length &&  array[i] != null && array[i].getKey() < item.getKey()) {
+            i++;
+        }
+        for (int j = array.length - 1; j > i; j--) {
+            array[j] = array[j - 1];
+        }
+        array[i] = item;
+    }
+
+    // print TreeNodeDataArray
+
+    public void printTreeNodeDataArray(TreeNodeData[] array) {
+        for (int i = 0; i < array.length; i++) {
+            if (array[i] != null) {
+                System.out.print(array[i].getKey());
+                System.out.print(",");
+            }
+        }
+        System.out.println();
+    }
+
+
+    public void traverseInOrder() {
+        traverseInOrder(rootNode);
+    }
+
+    public void traverseInOrder(TreeNode node) {
+        if (node != null) {
+            for (int i = 0; i < node.getNumChildren(); i++) {
+                traverseInOrder(node.getChild(i));
+            }
+            node.printItems();
+        }
+    }
+
 }
 /*
-    // Method to insert data recursively
-//    private TreeNode insert(TreeNode node, int data)
-//    {
-//        return node;
-//    }
-
-    // Method to check if tree is empty
-    public boolean isEmpty()
-    {
-        return root == null;
-    }
-
-
-    // Methods to delete data
-    public void delete(int k)
-    {
-//        if (isEmpty())
-//            System.out.println("Tree Empty");
-//        else if (search(k) == false)
-//            System.out.println("Sorry " + k + " is not present");
-//        else
-//        {
-//            root = delete(root, k);
-//            System.out.println(k + " deleted from the tree");
-//        }
-    }
-
-    private TreeNode delete(TreeNode root, int key)
-    {
-//        return root;
-    }
-
-
-    // Methods to search for an element
-//    public boolean search(int val) {
-//        return search(root, val);
-//    }
-//
-//    // Method to search for an element recursively
-//    private boolean search(TreeNode r, int val) {
-//        return true;
-//    }
-
     // Method for inorder traversal
 //    public void inorder()
 //    {
