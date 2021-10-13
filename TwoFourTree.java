@@ -27,12 +27,9 @@ public class TwoFourTree {
     // Method that returns the search result in a node
     public SearchResult keySearch(int key, TreeNode node){
         int prospectKeyIndex = node.keySearch(key);
-        // System.out.println("prospectKeyIndex " + prospectKeyIndex);
         if (prospectKeyIndex < 0) {
             return new SearchResult(rootNode);
         }
-        // node.printItems();
-        // System.out.println("key found " + node.getItem(prospectKeyIndex).getKey());
         TreeNodeData prospectItem = node.getItem(prospectKeyIndex);
         if(prospectItem.getKey() == key) {
             return new SearchResult(node, prospectItem);
@@ -46,7 +43,6 @@ public class TwoFourTree {
             if (currentNode != null) {
                 return keySearch(key, currentNode);
             }
-            // node.printItems();
             return new SearchResult(node);
         }
 
@@ -79,7 +75,6 @@ public class TwoFourTree {
         }
     }
 
-    //
     public void insert(TreeNodeData newItem) {
         insert(new InsertedItem(newItem));
     }
@@ -107,10 +102,6 @@ public class TwoFourTree {
         rootNode = newRootNode;
         node.setParent(newRootNode);
         TreeNode newNode = split(node, data);
-        // System.out.println("Print node");
-        // node.printItems();
-        // System.out.println("Print newnode");
-        // newNode.printItems();
         TreeNodeData promotedItem = promoteItem(newNode);
         System.out.println("Promoted item " + promotedItem.getKey());
         insert(
@@ -161,7 +152,6 @@ public class TwoFourTree {
     }
 
     private void insertSortedItemToArray (TreeNodeData[] array, TreeNodeData item) {
-        // printTreeNodeDataArray(array);
         int i = 0;
         while (i < array.length &&  array[i] != null && array[i].getKey() < item.getKey()) {
             i++;
@@ -172,47 +162,19 @@ public class TwoFourTree {
         array[i] = item;
     }
 
-    // print TreeNodeDataArray
-
-    public void printTreeNodeDataArray(TreeNodeData[] array) {
-        for (int i = 0; i < array.length; i++) {
-            if (array[i] != null) {
-                System.out.print(array[i].getKey());
-                System.out.print(",");
-            }
-        }
-        System.out.println();
+    // Traverses tree printing each node's items
+    public void traversePostOrder() {
+        traversePostOrder(rootNode);
     }
 
-
-    public void traverseInOrder() {
-        traverseInOrder(rootNode);
-    }
-
-    public void traverseInOrder(TreeNode node) {
+    public void traversePostOrder(TreeNode node) {
         if (node != null) {
             for (int i = 0; i < node.getNumChildren(); i++) {
-                traverseInOrder(node.getChild(i));
+                traversePostOrder(node.getChild(i));
             }
             node.printItems();
         }
     }
 
 }
-/*
-    // Method for inorder traversal
-//    public void inorder()
-//    {
-//        inorder(root);
-//    }
-//
-//    private void inorder(TreeNode r)
-//    {
-//        if (r != null)
-//        {
-//            inorder(r.getLeft());
-//            System.out.print(r.getData() + " ");
-//            inorder(r.getRight());
-//        }
-//    }
-*/
+

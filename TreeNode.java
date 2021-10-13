@@ -7,9 +7,7 @@ class TreeNode {
     public static final int maxItems = maxChildren - 1;
     private TreeNode parent;
     private final TreeNode[] childArray = new TreeNode[maxChildren];
-    //ArrayList<TreeNodeData> childArray = new ArrayList<TreeNodeData>();
     private final TreeNodeData[] itemArray = new TreeNodeData[maxItems];
-    //ArrayList<TreeNodeData> itemArray = new ArrayList<TreeNodeData>();
 
     // Returns the entry that is equal or the closest to the key being searched
     public TreeNode() {
@@ -17,7 +15,6 @@ class TreeNode {
     }
 
     public int keySearch(int key) {
-        // System.out.println("keySearch " + key);
         if (isEmpty()) {
             return -1;
         }
@@ -34,7 +31,6 @@ class TreeNode {
             else
                 start = middle + 1;
         }
-        // System.out.println("Insert in " + middle);
         return middle;
     }
 
@@ -185,6 +181,7 @@ class TreeNode {
         return itemArray[0] == null;
     }
 
+    // Print items stored in the node
     public void printItems() {
         for (int i = 0; i < maxItems; i++) {
             if (itemArray[i] != null) {
@@ -195,10 +192,12 @@ class TreeNode {
         System.out.println();
     }
 
+    // Checks if the node is a root node
     public boolean isRoot() {
         return parent == null;
     }
 
+    // Clear all the node's itens
     public void clearItems() {
         numItems = 0;
         for (int i = 0; i < maxItems; i++) {
